@@ -6,18 +6,25 @@ require("dotenv").config();
 const app = express();
 
 /* ===== CORS ===== */
-const allowedOrigins = [
-  "http://localhost:3000",
-  "https://eduquest-frontend.onrender.com"
-];
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
 
-app.use(
-  cors({
-    origin: allowedOrigins,
-    credentials: true,
-  })
-);
+    const allowedOrigins = [
+      "http://localhost:3000",
+      "https://eduquest-kze9.onrender.com"
+    ];
 
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 app.use(express.json({ limit: "5mb" }));
 
 /* ===== ROUTES ===== */
