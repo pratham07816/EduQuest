@@ -8,7 +8,7 @@ const app = express();
 /* ===== CORS ===== */
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://YOUR_FRONTEND_NAME.vercel.app"
+  "https://eduquest-frontend.onrender.com"
 ];
 
 app.use(
@@ -34,28 +34,14 @@ app.get("/", (req, res) => {
   res.send("EduQuest Backend Running");
 });
 
-/* ===== DB (SERVERLESS SAFE) ===== */
-let isConnected = false;
+/* ===== DB ===== */
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => console.log("MongoDB connected"))
+  .catch((err) => console.error(err));
 
-async function connectDB() {
-  if (isConnected) return;
-  try {
-    await mongoose.connect(process.env.MONGO_URI);
-    isConnected = true;
-    console.log("MongoDB connected");
-  } catch (err) {
-    console.error(err);
-  }
-}
-
-connectDB();
-
-/* ===== LOCAL ONLY ===== */
-if (process.env.NODE_ENV !== "production") {
-  const PORT = process.env.PORT || 5000;
-  app.listen(PORT, () =>
-    console.log(`Server running locally on port ${PORT}`)
-  );
-}
-
-module.exports = app;
+/* ===== START SERVER ===== */
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () =>
+  console.log(`Server running on port ${PORT}`)
+);
