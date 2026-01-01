@@ -6,13 +6,7 @@ require("dotenv").config();
 const app = express();
 
 /* ================= MIDDLEWARE ================= */
-app.use(
-  cors({
-    origin: "http://localhost:3000",
-    credentials: true,
-  })
-);
-
+app.use(cors()); // allow all origins (safe for now)
 app.use(express.json({ limit: "5mb" }));
 
 /* ================= ROUTES ================= */
@@ -25,23 +19,19 @@ app.use("/api/progress", require("./routes/progressRoutes"));
 app.use("/api/notifications", require("./routes/notificationRoutes"));
 app.use("/api/announcements", require("./routes/announcementRoutes"));
 
+/* ================= ROOT ================= */
 app.get("/", (req, res) => {
   res.send("EduQuest Backend Running");
 });
 
-/* ================= DB ================= */
+/* ================= DATABASE ================= */
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.error("MongoDB error:", err));
 
-/* ================= LOCAL vs VERCEL ================= */
-if (process.env.NODE_ENV !== "production") {
-  const PORT = process.env.PORT || 5000;
-  app.listen(PORT, () =>
-    console.log(`Server running locally on port ${PORT}`)
-  );
-}
-
+/* ❌ NO app.listen() */
+/* ✅ EXPORT app for Vercel */
 module.exports = app;
+
 
