@@ -2,7 +2,7 @@ import axios from "axios";
 
 /* ================= AXIOS INSTANCE ================= */
 const api = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL: import.meta.env.VITE_API_BASE_URL,
   withCredentials: true,
 });
 
@@ -17,10 +17,7 @@ api.interceptors.request.use(
       delete config.headers.Authorization;
     }
 
-    /**
-     * IMPORTANT:
-     * Do NOT manually set Content-Type for FormData
-     */
+    // Do NOT manually set Content-Type for FormData
     if (!(config.data instanceof FormData)) {
       config.headers["Content-Type"] = "application/json";
     }
@@ -57,30 +54,24 @@ export const getSubjects = () =>
   api.get("/subjects");
 
 /* ================= TEACHER / STUDENT MANAGEMENT ================= */
-
-// ✅ Get all students (Teacher only)
 export const getStudents = async () => {
   const res = await api.get("/teacher/students");
   return res.data;
 };
 
-// ✅ Get single student (future use)
 export const getStudentById = async (id: string) => {
   const res = await api.get(`/teacher/students/${id}`);
   return res.data;
 };
 
-// ✅ Reset student progress (admin / teacher)
 export const resetStudentProgress = (studentId: string) =>
   api.put(`/teacher/students/${studentId}/reset`);
 
-// ✅ Send message to student (future)
 export const sendMessageToStudent = (studentId: string, message: string) =>
   api.post(`/teacher/students/${studentId}/message`, { message });
 
-/* ================= ANALYTICS (FUTURE-READY) ================= */
+/* ================= ANALYTICS ================= */
 export const getClassAnalytics = () =>
   api.get("/teacher/analytics");
 
-/* ================= EXPORT ================= */
 export default api;
