@@ -5,7 +5,7 @@ require("dotenv").config();
 
 const app = express();
 
-/* ================= MIDDLEWARE (MUST BE FIRST) ================= */
+/* ================= MIDDLEWARE ================= */
 app.use(
   cors({
     origin: "http://localhost:3000",
@@ -14,13 +14,6 @@ app.use(
 );
 
 app.use(express.json({ limit: "5mb" }));
-
-/* ================= CRON JOBS ================= */
-const performanceCheck = require("./utils/performanceCheck");
-const classAverage = require("./utils/classAverage");
-
-setInterval(classAverage, 7 * 24 * 60 * 60 * 1000); // weekly
-setInterval(performanceCheck, 24 * 60 * 60 * 1000); // daily
 
 /* ================= ROUTES ================= */
 app.use("/api/auth", require("./routes/authRoutes"));
@@ -32,19 +25,23 @@ app.use("/api/progress", require("./routes/progressRoutes"));
 app.use("/api/notifications", require("./routes/notificationRoutes"));
 app.use("/api/announcements", require("./routes/announcementRoutes"));
 
-
-app.use("/videos", express.static("videos"));
+app.get("/", (req, res) => {
+  res.send("EduQuest Backend Running");
+});
 
 /* ================= DB ================= */
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB connected"))
-  .catch((err) => console.log("MongoDB error:", err));
+  .catch((err) => console.error("MongoDB error:", err));
 
-app.get("/", (req, res) => {
-  res.send("EduQuest Backend Running");
-});
+/* ================= LOCAL vs VERCEL ================= */
+if (process.env.NODE_ENV !== "production") {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () =>
+    console.log(`Server running locally on port ${PORT}`)
+  );
+}
 
-app.listen(process.env.PORT, () => {
-  console.log(`Server running on port ${process.env.PORT}`);
-});
+module.exports = app;
+
