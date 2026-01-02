@@ -15,7 +15,6 @@ import api from "../../services/api";
 import { useAuth } from "../../context/AuthContext";
 import { toast } from "sonner";
 
-
 /* ================= TYPES ================= */
 
 interface Chapter {
@@ -68,7 +67,7 @@ export function AssignmentPage({ onBack }: { onBack: () => void }) {
   /* ================= DATA ================= */
 
   useEffect(() => {
-    api.get("/subjects").then((res) => setSubjects(res.data));
+    api.get("/api/subjects").then((res) => setSubjects(res.data));
   }, []);
 
   useEffect(() => {
@@ -83,7 +82,7 @@ export function AssignmentPage({ onBack }: { onBack: () => void }) {
     setQuestions([]);
 
     api
-      .get(`/quizzes/${selectedChapter.quizId}`)
+      .get(`/api/quizzes/${selectedChapter.quizId}`)
       .then((res) => setQuestions(res.data.questions || []))
       .finally(() => setLoading(false));
   }, [selectedChapter]);
@@ -93,7 +92,7 @@ export function AssignmentPage({ onBack }: { onBack: () => void }) {
   const handleAddQuestion = async () => {
     try {
       await api.post(
-        `/quizzes/${selectedChapter?.quizId}/questions`,
+        `/api/quizzes/${selectedChapter?.quizId}/questions`,
         form
       );
 
@@ -106,17 +105,13 @@ export function AssignmentPage({ onBack }: { onBack: () => void }) {
       });
 
       const res = await api.get(
-        `/quizzes/${selectedChapter?.quizId}`
+        `/api/quizzes/${selectedChapter?.quizId}`
       );
       setQuestions(res.data.questions || []);
 
-      toast.success("Question added successfully", {
-        duration: 2500,
-      });
+      toast.success("Question added successfully", { duration: 2500 });
     } catch {
-      toast.error("Failed to add question", {
-        duration: 2500,
-      });
+      toast.error("Failed to add question", { duration: 2500 });
     }
   };
 
@@ -125,17 +120,13 @@ export function AssignmentPage({ onBack }: { onBack: () => void }) {
 
     try {
       await api.delete(
-        `/quizzes/${selectedChapter?.quizId}/questions/${index}`
+        `/api/quizzes/${selectedChapter?.quizId}/questions/${index}`
       );
 
       setQuestions((prev) => prev.filter((_, i) => i !== index));
-      toast.success("Question deleted successfully", {
-        duration: 2500,
-      });
+      toast.success("Question deleted successfully", { duration: 2500 });
     } catch {
-      toast.error("Failed to delete question", {
-        duration: 2500,
-      });
+      toast.error("Failed to delete question", { duration: 2500 });
     }
   };
 
