@@ -38,40 +38,73 @@ export const setAuthToken = (token: string | null) => {
 
 /* ================= AUTH ================= */
 export const login = (data: { email: string; password: string }) =>
-  api.post("/auth/login", data);
+  api.post("/api/auth/login", data);
 
-export const register = (data: any) =>
-  api.post("/auth/register", data);
+export const register = (data: {
+  name: string;
+  email: string;
+  password: string;
+  role?: string;
+}) => api.post("/api/auth/register", data);
 
 export const getProfile = () =>
-  api.get("/auth/profile");
+  api.get("/api/auth/profile");
 
-export const updateProfile = (data: any) =>
-  api.put("/auth/profile", data);
+export const updateProfile = (data: {
+  name?: string;
+  email?: string;
+  class?: string;
+  language?: string;
+  offlineMode?: boolean;
+  avatar?: string;
+}) => api.put("/api/auth/profile", data);
 
 /* ================= SUBJECTS ================= */
 export const getSubjects = () =>
-  api.get("/subjects");
+  api.get("/api/subjects");
+
+/* ================= QUIZZES ================= */
+export const getQuizById = (quizId: string) =>
+  api.get(`/api/quizzes/${quizId}`);
+
+export const submitQuiz = (quizId: string, data: any) =>
+  api.post(`/api/quizzes/${quizId}/submit`, data);
+
+/* ================= LEADERBOARD ================= */
+export const getLeaderboard = () =>
+  api.get("/api/leaderboard");
+
+/* ================= PROGRESS ================= */
+export const getProgress = () =>
+  api.get("/api/progress");
 
 /* ================= TEACHER / STUDENT MANAGEMENT ================= */
 export const getStudents = async () => {
-  const res = await api.get("/teacher/students");
+  const res = await api.get("/api/teacher/students");
   return res.data;
 };
 
 export const getStudentById = async (id: string) => {
-  const res = await api.get(`/teacher/students/${id}`);
+  const res = await api.get(`/api/teacher/students/${id}`);
   return res.data;
 };
 
 export const resetStudentProgress = (studentId: string) =>
-  api.put(`/teacher/students/${studentId}/reset`);
+  api.put(`/api/teacher/students/${studentId}/reset`);
 
 export const sendMessageToStudent = (studentId: string, message: string) =>
-  api.post(`/teacher/students/${studentId}/message`, { message });
+  api.post(`/api/teacher/students/${studentId}/message`, { message });
 
 /* ================= ANALYTICS ================= */
 export const getClassAnalytics = () =>
-  api.get("/teacher/analytics");
+  api.get("/api/teacher/analytics");
+
+/* ================= NOTIFICATIONS ================= */
+export const getNotifications = () =>
+  api.get("/api/notifications");
+
+/* ================= ANNOUNCEMENTS ================= */
+export const getAnnouncements = () =>
+  api.get("/api/announcements");
 
 export default api;
