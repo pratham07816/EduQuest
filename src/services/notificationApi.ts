@@ -1,28 +1,33 @@
 import axios from "axios";
 
+/* ================= AXIOS INSTANCE ================= */
 const API = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL: import.meta.env.VITE_API_BASE_URL,
+  withCredentials: true,
 });
 
-// 🔐 Attach JWT automatically
-API.interceptors.request.use((req) => {
-  const token = localStorage.getItem("token"); // MUST exist
-  if (token) {
-    req.headers.Authorization = `Bearer ${token}`;
-  }
-  return req;
-});
+/* ================= AUTH TOKEN ================= */
+API.interceptors.request.use(
+  (req) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      req.headers.Authorization = `Bearer ${token}`;
+    }
+    return req;
+  },
+  (error) => Promise.reject(error)
+);
 
 /* ================= NOTIFICATIONS ================= */
 
 export const getNotifications = () =>
-  API.get("/notifications");
+  API.get("/api/notifications");
 
 export const getNotificationStats = () =>
-  API.get("/notifications/stats");
+  API.get("/api/notifications/stats");
 
 export const markNotificationsRead = () =>
-  API.put("/notifications/read");
+  API.put("/api/notifications/read");
 
 /* ================= ANNOUNCEMENTS ================= */
 
@@ -30,4 +35,6 @@ export const sendAnnouncement = (data: {
   subject: string;
   message: string;
 }) =>
-  API.post("/announcements", data);
+  API.post("/api/announcements", data);
+
+export default API;
