@@ -48,7 +48,7 @@ export function LeaderboardPage({ onBack }: LeaderboardPageProps) {
       setLoading(true);
       try {
         const res = await api.get<LeaderboardResponse>(
-          `/leaderboard?period=${period}`
+          `/api/leaderboard?period=${period}`
         );
         setData(res.data);
       } catch (err) {
