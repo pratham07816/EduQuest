@@ -113,13 +113,10 @@ export function TeacherDashboard({
   onLogout,
 }: TeacherDashboardProps) {
   const [stats, setStats] = useState<any>(null);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
-    getTeacherDashboard().then((res) => {
-      console.log("Badge Distribution:", res.data.badgeDistribution);
-      setStats(res.data);
-    });
+    getTeacherDashboard().then((res) => setStats(res.data));
   }, []);
 
   /* -------- SAFE FALLBACKS -------- */
@@ -137,85 +134,29 @@ export function TeacherDashboard({
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* ================= SIDEBAR ================= */}
-      <div className="fixed left-0 top-0 h-full w-64 bg-white border-r p-4 hidden md:block">
-        <div className="mb-8">
-          <h2 className="text-lg">EduQuest Teacher</h2>
-          <p className="text-xs text-gray-500">Dashboard</p>
-        </div>
-
-        <nav className="space-y-2">
-          <Button variant="ghost" className="w-full justify-start">
-            <BarChart3 className="w-4 h-4 mr-2" />
-            Dashboard
-          </Button>
-          <Button
-            variant="ghost"
-            className="w-full justify-start"
-            onClick={() => onNavigate("students")}
-          >
-            <Users className="w-4 h-4 mr-2" />
-            Students
-          </Button>
-          <Button
-            variant="ghost"
-            className="w-full justify-start"
-            onClick={() => onNavigate("assignments")}
-          >
-            <FileText className="w-4 h-4 mr-2" />
-            Assignments
-          </Button>
-          <Button
-            variant="ghost"
-            className="w-full justify-start"
-            onClick={() => onNavigate("analytics")}
-          >
-            <BarChart3 className="w-4 h-4 mr-2" />
-            Analytics
-          </Button>
-          <Button
-            variant="ghost"
-            className="w-full justify-start"
-            onClick={() => onNavigate("notifications")}
-          >
-            <Bell className="w-4 h-4 mr-2" />
-            Notifications
-          </Button>
-          <Button
-            variant="ghost"
-            className="w-full justify-start"
-            onClick={() => onNavigate("settings")}
-          >
-            <Settings className="w-4 h-4 mr-2" />
-            Settings
-          </Button>
-        </nav>
-
-        <div className="absolute bottom-4 left-4 right-4">
-          <Button variant="outline" className="w-full" onClick={onLogout}>
-            Logout
-          </Button>
-        </div>
-      </div>
-
-      {/* ================= MOBILE HEADER ================= */}
-      <div className="md:hidden flex items-center justify-between bg-white p-4 border-b sticky top-0 z-40">
-        <h2 className="text-lg font-semibold">EduQuest</h2>
-        <Button variant="ghost" size="icon" onClick={() => setMobileMenuOpen(true)}>
+      {/* ================= TOP HEADER ================= */}
+      <div className="flex items-center gap-3 bg-white p-4 border-b sticky top-0 z-40">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => setMenuOpen(true)}
+        >
           <Menu className="w-6 h-6" />
         </Button>
+
+        <h2 className="text-lg font-semibold">EduQuest</h2>
       </div>
 
-      {/* ================= MOBILE DROPDOWN SIDEBAR ================= */}
-      {mobileMenuOpen && (
-        <div className="fixed inset-0 bg-black/40 z-50 md:hidden">
+      {/* ================= DROPDOWN SIDEBAR ================= */}
+      {menuOpen && (
+        <div className="fixed inset-0 bg-black/40 z-50">
           <div className="absolute left-0 top-0 w-64 h-full bg-white p-4">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-lg font-semibold">Menu</h2>
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => setMobileMenuOpen(false)}
+                onClick={() => setMenuOpen(false)}
               >
                 <X className="w-5 h-5" />
               </Button>
@@ -232,7 +173,7 @@ export function TeacherDashboard({
                 className="w-full justify-start"
                 onClick={() => {
                   onNavigate("students");
-                  setMobileMenuOpen(false);
+                  setMenuOpen(false);
                 }}
               >
                 <Users className="w-4 h-4 mr-2" />
@@ -244,7 +185,7 @@ export function TeacherDashboard({
                 className="w-full justify-start"
                 onClick={() => {
                   onNavigate("assignments");
-                  setMobileMenuOpen(false);
+                  setMenuOpen(false);
                 }}
               >
                 <FileText className="w-4 h-4 mr-2" />
@@ -256,7 +197,7 @@ export function TeacherDashboard({
                 className="w-full justify-start"
                 onClick={() => {
                   onNavigate("analytics");
-                  setMobileMenuOpen(false);
+                  setMenuOpen(false);
                 }}
               >
                 <BarChart3 className="w-4 h-4 mr-2" />
@@ -268,7 +209,7 @@ export function TeacherDashboard({
                 className="w-full justify-start"
                 onClick={() => {
                   onNavigate("notifications");
-                  setMobileMenuOpen(false);
+                  setMenuOpen(false);
                 }}
               >
                 <Bell className="w-4 h-4 mr-2" />
@@ -280,7 +221,7 @@ export function TeacherDashboard({
                 className="w-full justify-start"
                 onClick={() => {
                   onNavigate("settings");
-                  setMobileMenuOpen(false);
+                  setMenuOpen(false);
                 }}
               >
                 <Settings className="w-4 h-4 mr-2" />
@@ -297,8 +238,8 @@ export function TeacherDashboard({
         </div>
       )}
 
-      {/* ================= MAIN ================= */}
-      <div className="md:ml-64 p-4 md:p-8">
+      {/* ================= MAIN CONTENT ================= */}
+      <div className="p-4 md:p-8">
         <div className="max-w-7xl mx-auto space-y-6">
           {/* HEADER */}
           <div>
