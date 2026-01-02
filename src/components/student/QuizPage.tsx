@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
 import { Progress } from "../ui/progress";
 import { Badge } from "../ui/badge";
-import { Clock, Trophy, Star } from "lucide-react";
+import { Clock, Trophy } from "lucide-react";
 import confetti from "canvas-confetti";
 import { Quiz } from "../../types";
 import api from "../../services/api";
@@ -52,28 +52,36 @@ export function QuizPage({ quizData, onBack }: QuizPageProps) {
   const [timeLeft, setTimeLeft] = useState(30);
   const [showResult, setShowResult] = useState(false);
 
-  // ✅ NEW: store newly unlocked badges
   const [newlyUnlockedBadges, setNewlyUnlockedBadges] = useState<any[]>([]);
 
   /* ================= FETCH QUIZ ================= */
   useEffect(() => {
     if (!selectedChapter?.quizId) return;
 
-    setLoadingQuiz(true);
-    setQuiz(null);
+    const fetchQuiz = async () => {
+      try {
+        setLoadingQuiz(true);
+        setQuiz(null);
 
-    fetch(`http://localhost:5000/api/quizzes/${selectedChapter.quizId}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setQuiz(data);
-        setTimeLeft(data.timePerQuestion);
+        const res = await api.get(
+          `/api/quizzes/${selectedChapter.quizId}`
+        );
+
+        setQuiz(res.data);
+        setTimeLeft(res.data.timePerQuestion);
         setCurrentQuestionIndex(0);
         setScore(0);
         setTotalXP(0);
         setShowResult(false);
         setNewlyUnlockedBadges([]);
-      })
-      .finally(() => setLoadingQuiz(false));
+      } catch (err) {
+        console.error("Failed to load quiz", err);
+      } finally {
+        setLoadingQuiz(false);
+      }
+    };
+
+    fetchQuiz();
   }, [selectedChapter]);
 
   /* ================= TIMER ================= */
@@ -116,12 +124,10 @@ export function QuizPage({ quizData, onBack }: QuizPageProps) {
         });
       }
 
-      // ✅ calculate new progress
       const newXp = user.progress.xp + totalXP;
       const newQuizzes = user.progress.quizzesCompleted + 1;
       const newLevel = Math.floor(newXp / 500) + 1;
 
-      // ✅ detect newly unlocked badges
       const updatedBadges = unlockBadges({
         xp: newXp,
         level: newLevel,
@@ -149,7 +155,9 @@ export function QuizPage({ quizData, onBack }: QuizPageProps) {
 
     if (index === quiz.questions[currentQuestionIndex].correctAnswer) {
       setScore((s) => s + 1);
-      setTotalXP((xp) => xp + (quiz.questions[currentQuestionIndex].xpReward ?? 0));
+      setTotalXP(
+        (xp) => xp + (quiz.questions[currentQuestionIndex].xpReward ?? 0)
+      );
     }
 
     setTimeout(moveNext, 1200);
@@ -164,7 +172,7 @@ export function QuizPage({ quizData, onBack }: QuizPageProps) {
     );
 
     try {
-      const res = await api.post("/progress", {
+      const res = await api.post("/api/progress", {
         xpGained: totalXP,
         score: percent,
         unlockedBadges: newlyUnlockedBadges.map((b) => b.id),
