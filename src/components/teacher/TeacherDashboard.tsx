@@ -126,8 +126,14 @@ export function TeacherDashboard({
 
       {/* ================= DROPDOWN MENU ================= */}
       {menuOpen && (
-        <div className="fixed inset-0 bg-black/40 z-50">
-          <div className="absolute left-0 top-0 w-64 h-full bg-white p-4">
+        <div
+          className="fixed inset-0 z-50 md:bg-transparent bg-black/40"
+          onClick={() => setMenuOpen(false)}
+        >
+          <div
+            className="absolute left-0 top-0 w-64 h-full bg-white p-4 md:static md:h-screen"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-lg font-semibold">Menu</h2>
               <Button variant="ghost" size="icon" onClick={() => setMenuOpen(false)}>
@@ -140,23 +146,43 @@ export function TeacherDashboard({
                 <BarChart3 className="w-4 h-4 mr-2" /> Dashboard
               </Button>
 
-              <Button variant="ghost" className="w-full justify-start" onClick={() => { onNavigate("students"); setMenuOpen(false); }}>
+              <Button
+                variant="ghost"
+                className="w-full justify-start"
+                onClick={() => { onNavigate("students"); setMenuOpen(false); }}
+              >
                 <Users className="w-4 h-4 mr-2" /> Students
               </Button>
 
-              <Button variant="ghost" className="w-full justify-start" onClick={() => { onNavigate("assignments"); setMenuOpen(false); }}>
+              <Button
+                variant="ghost"
+                className="w-full justify-start"
+                onClick={() => { onNavigate("assignments"); setMenuOpen(false); }}
+              >
                 <FileText className="w-4 h-4 mr-2" /> Assignments
               </Button>
 
-              <Button variant="ghost" className="w-full justify-start" onClick={() => { onNavigate("analytics"); setMenuOpen(false); }}>
+              <Button
+                variant="ghost"
+                className="w-full justify-start"
+                onClick={() => { onNavigate("analytics"); setMenuOpen(false); }}
+              >
                 <BarChart3 className="w-4 h-4 mr-2" /> Analytics
               </Button>
 
-              <Button variant="ghost" className="w-full justify-start" onClick={() => { onNavigate("notifications"); setMenuOpen(false); }}>
+              <Button
+                variant="ghost"
+                className="w-full justify-start"
+                onClick={() => { onNavigate("notifications"); setMenuOpen(false); }}
+              >
                 <Bell className="w-4 h-4 mr-2" /> Notifications
               </Button>
 
-              <Button variant="ghost" className="w-full justify-start" onClick={() => { onNavigate("settings"); setMenuOpen(false); }}>
+              <Button
+                variant="ghost"
+                className="w-full justify-start"
+                onClick={() => { onNavigate("settings"); setMenuOpen(false); }}
+              >
                 <Settings className="w-4 h-4 mr-2" /> Settings
               </Button>
             </nav>
@@ -169,11 +195,17 @@ export function TeacherDashboard({
       )}
 
       {/* ================= MAIN ================= */}
-      <div className="p-4 md:p-8">
+      <div
+        className={`p-4 md:p-8 transition-all duration-300 ${
+          menuOpen ? "md:ml-64" : ""
+        }`}
+      >
         <div className="max-w-7xl mx-auto space-y-6">
           <div>
             <h1 className="text-2xl">Welcome, {teacher.name}</h1>
-            <p className="text-gray-600">{teacher.school} - {teacher.specialization}</p>
+            <p className="text-gray-600">
+              {teacher.school} - {teacher.specialization}
+            </p>
           </div>
 
           {/* TOP STATS */}
@@ -251,7 +283,9 @@ export function TeacherDashboard({
                     </PieChart>
                   </ResponsiveContainer>
                 ) : (
-                  <p className="text-center text-gray-400 mt-24">No badges earned yet</p>
+                  <p className="text-center text-gray-400 mt-24">
+                    No badges earned yet
+                  </p>
                 )}
               </CardContent>
             </Card>
