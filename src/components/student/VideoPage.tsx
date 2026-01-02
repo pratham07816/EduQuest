@@ -51,7 +51,7 @@ export function VideoPage({ data, onBack }: VideoPageProps) {
             variant="outline"
             onClick={() =>
               window.open(
-                `http://localhost:5000/downloads/${chapter.pdfUrl}`
+                `${import.meta.env.VITE_API_BASE_URL}/downloads/${chapter.pdfUrl}`
               )
             }
           >
