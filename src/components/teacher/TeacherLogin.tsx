@@ -30,7 +30,7 @@ export function TeacherLoginPage() {
     try {
       setLoading(true);
 
-      const res = await api.post("/auth/login", {
+      const res = await api.post("/api/auth/login", {
         email,
         password,
       });
@@ -54,7 +54,7 @@ export function TeacherLoginPage() {
     try {
       setLoading(true);
 
-      const res = await api.post("/auth/register", {
+      const res = await api.post("/api/auth/register", {
         name,
         email,
         password,
